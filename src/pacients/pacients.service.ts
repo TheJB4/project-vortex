@@ -24,8 +24,12 @@ export class PacientsService {
     return await this.repoPacient.find()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} pacient`;
+  async findOne(id: number) {
+    return await this.repoPacient.findOne({
+      where:{
+        id
+      }
+    })
   }
 
   update(id: number, updatePacientDto: UpdatePacientDto) {

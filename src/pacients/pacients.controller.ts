@@ -19,14 +19,14 @@ export class PacientsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.pacientsService.findOne(+id);
+    return this.pacientsService.findOne(parseInt(id));
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updatePacientDto: UpdatePacientDto) {
     return this.pacientsService.update(+id, updatePacientDto);
   }
-
+  
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.pacientsService.remove(+id);

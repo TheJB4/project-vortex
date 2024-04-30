@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreatePacientDto } from './dto/create-pacient.dto';
 import { UpdatePacientDto } from './dto/update-pacient.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -32,11 +32,36 @@ export class PacientsService {
     })
   }
 
-  update(id: number, updatePacientDto: UpdatePacientDto) {
-    return `This action updates a #${id} pacient`;
+  async update(id: number, updatePacientDto: UpdatePacientDto) {
+    let patient = await this.repoPacient.findOne({
+      where:{
+        id
+      }
+    })
+ 
+    if(!patient) throw new HttpException('NOT_FOUND',HttpStatus.NOT_FOUND)
+
+    await this.repoPacient.update(id,updatePacientDto)
+
+    return {
+      'message':"El paciente se actualizo con exito"
+    }
+
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} pacient`;
+  async remove(id: number) {
+    let patient = await this.repoPacient.findOne({
+      where:{
+        id
+      }
+    })
+
+    if(!patient) throw new HttpException('NOT_FOUND',HttpStatus.NOT_FOUND)
+
+    await this.repoPacient.delete(id)
+
+    return {
+      'message':"El paciente se elimino con exito!"
+    }
   }
 }

@@ -1,15 +1,16 @@
 import { Module } from '@nestjs/common';
-import { TaskModule } from './task/task.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {ConfigModule, ConfigService} from '@nestjs/config'
 import { PacientsModule } from './pacients/pacients.module';
-import { Pacient } from './pacients/entities/pacient.entity';
+import { HistorysModule } from './historys/historys.module';
 import configuration from './config/configuration'
+import { ConsultsModule } from './consults/consults.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal:true,
+      envFilePath:['.env.development.local'],
       load:[configuration]
     }),
     TypeOrmModule.forRootAsync({
@@ -25,8 +26,9 @@ import configuration from './config/configuration'
       }),
       inject:[ConfigService]
     }),
-    TaskModule,
-    PacientsModule
+    PacientsModule,
+    HistorysModule,
+    ConsultsModule
   ],
   controllers: [],
   providers: [],

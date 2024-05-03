@@ -1,4 +1,5 @@
-import { Entity,Column, PrimaryGeneratedColumn } from "typeorm";
+import { History } from "src/historys/entities/history.entity";
+import { Entity,Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm";
 
 @Entity()
 export class Pacient {
@@ -10,4 +11,8 @@ export class Pacient {
 
     @Column()
     lastName: string
+
+    @OneToOne(()=> History)
+    @JoinColumn()
+    history: History
 }

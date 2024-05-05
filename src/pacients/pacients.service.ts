@@ -6,33 +6,38 @@ import { Pacient } from './entities/pacient.entity';
 import { Repository } from 'typeorm';
 import { History } from 'src/historys/entities/history.entity';
 import { CreateHistoryDto } from 'src/historys/dto/create-history.dto';
+import { Consult } from 'src/consults/entities/consult.entity';
+import { Doctor } from 'src/doctor/entities/doctor.entity';
+import { CreateDoctorDto } from 'src/doctor/dto/create-doctor.dto';
 
 @Injectable()
 export class PacientsService {
   constructor(
     @InjectRepository(Pacient)
     private repoPacient: Repository<Pacient>,
-    @InjectRepository(History) 
-    private repoHistory: Repository<History>
-  ){
+    @InjectRepository(History)
+    private repoHistory: Repository<History>,
+    @InjectRepository(Doctor)
+    private repoDoctor: Repository<Doctor>
+  ) {
 
   }
-  async create(createPacientDto: CreatePacientDto) {
-    //let historyCreated = new History()
-    let historyCreated = this.repoHistory.create({
-      antecedentes:'',
-      diagnostico:'',
-      tratamiento:'',
-      consultas:['12/2/8','13/2/2024']
-    })
+  async create({ createPacientDto, createDoctorDto }: { createPacientDto: CreatePacientDto, createDoctorDto: CreateDoctorDto }) {
+    let pacientCreated = this.repoPacient.create(createPacientDto)
+    let historyCreated = new History()
+
+    let newConsult = new Consult()
+    newConsult.date = new Date()
+
+    let newDoctor = this.repoDoctor.create(createDoctorDto)
+    console.log('hola',newDoctor)
+
+    historyCreated.consultas = [newConsult]
     await this.repoHistory.save(historyCreated)
 
-    let userCreated = this.repoPacient.create(createPacientDto)
-    userCreated.history = historyCreated
-
-    await this.repoPacient.save(userCreated)
-
-    return userCreated
+    pacientCreated.history = historyCreated
+    pacientCreated.doctors = [newDoctor]
+    return await this.repoPacient.save(pacientCreated)
   }
 
   async findAll() {
@@ -45,7 +50,7 @@ export class PacientsService {
 
   async findOne(id: number) {
     return await this.repoPacient.findOne({
-      where:{
+      where: {
         id
       }
     })
@@ -53,34 +58,34 @@ export class PacientsService {
 
   async update(id: number, updatePacientDto: UpdatePacientDto) {
     let patient = await this.repoPacient.findOne({
-      where:{
+      where: {
         id
       }
     })
- 
-    if(!patient) throw new HttpException('NOT_FOUND',HttpStatus.NOT_FOUND)
 
-    await this.repoPacient.update(id,updatePacientDto)
+    if (!patient) throw new HttpException('NOT_FOUND', HttpStatus.NOT_FOUND)
+
+    await this.repoPacient.update(id, updatePacientDto)
 
     return {
-      'message':"El paciente se actualizo con exito"
+      'message': "El paciente se actualizo con exito"
     }
 
   }
 
   async remove(id: number) {
     let patient = await this.repoPacient.findOne({
-      where:{
+      where: {
         id
       }
     })
 
-    if(!patient) throw new HttpException('NOT_FOUND',HttpStatus.NOT_FOUND)
+    if (!patient) throw new HttpException('NOT_FOUND', HttpStatus.NOT_FOUND)
 
     await this.repoPacient.delete(id)
 
     return {
-      'message':"El paciente se elimino con exito!"
+      'message': "El paciente se elimino con exito!"
     }
   }
 }

@@ -5,12 +5,13 @@ import { PacientsModule } from './pacients/pacients.module';
 import { HistorysModule } from './historys/historys.module';
 import configuration from './config/configuration'
 import { ConsultsModule } from './consults/consults.module';
+import { DoctorModule } from './doctor/doctor.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal:true,
-      envFilePath:['.env.development.local'],
+      envFilePath:['.env'],
       load:[configuration]
     }),
     TypeOrmModule.forRootAsync({
@@ -28,7 +29,8 @@ import { ConsultsModule } from './consults/consults.module';
     }),
     PacientsModule,
     HistorysModule,
-    ConsultsModule
+    ConsultsModule,
+    DoctorModule
   ],
   controllers: [],
   providers: [],

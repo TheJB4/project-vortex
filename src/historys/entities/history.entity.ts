@@ -1,25 +1,26 @@
 import { Consult } from "src/consults/entities/consult.entity"
 import { Pacient } from "src/pacients/entities/pacient.entity"
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, JoinColumn, JoinTable, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity()
 export class History {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column()
+    @Column({nullable: true})
     antecedentes : string
 
-    @Column()
+    @Column({nullable: true})
     diagnostico: string
     
-    @Column()
+    @Column({nullable: true})
     tratamiento: string
 
-    @OneToOne(()=> Pacient,(pacient) => pacient.history)
+    @OneToOne(()=> Pacient,(pacient) => pacient.history,{cascade:true})
+    @JoinTable()
     pacient: Pacient
 
-    @OneToMany(() => Consult,(consult) => consult.history)
+    @OneToMany(() => Consult,(consult) => consult.history,{cascade:true})
     consultas: Consult[]
 
 }

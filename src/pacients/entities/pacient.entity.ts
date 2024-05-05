@@ -1,5 +1,6 @@
+import { Doctor } from "src/doctor/entities/doctor.entity";
 import { History } from "src/historys/entities/history.entity";
-import { Entity,Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm";
+import { Entity,Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToMany } from "typeorm";
 
 @Entity()
 export class Pacient {
@@ -12,7 +13,11 @@ export class Pacient {
     @Column()
     lastName: string
 
-    @OneToOne(()=> History)
+    @OneToOne(()=> History,(history) => history.pacient)
     @JoinColumn()
     history: History
+
+    @ManyToMany(()=> Doctor, (doctor) => doctor.pacients,{cascade:true})
+    doctors: Doctor[]
+
 }
